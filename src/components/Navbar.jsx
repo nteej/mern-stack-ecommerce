@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { HiMiniBars3CenterLeft } from "react-icons/hi2";
 import { IoSearchOutline, IoHeartOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
 import { IoMdCart } from "react-icons/io";
 import "./styles.css";
-const Navbar = () => {
-  const currentUser = false;
+import avatarImg from "../assets/avatar.png";
 
+const navigation = [
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Orders", href: "/orders" },
+  { name: "Cart", href: "/cart" },
+  { name: "Checkout", href: "/checkout" },
+  { name: "LogOut", href: "/logout" },
+];
+
+const Navbar = () => {
+  const currentUser = true;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  console.log(isDropdownOpen);
   return (
     <header className="max-w-screen-2xl mx-auto px-4 py-6">
       <nav className="flex justify-between items-center">
@@ -28,12 +39,41 @@ const Navbar = () => {
         {/* Right Side*/}
         <div className="relative flex items-center md:space-x-3 space-x-2">
           <div>
-            {currentUser ? <>User</> : <Link to="/login"><FaUser className="size-6"/></Link>}
+            {currentUser ? (
+              <>
+                <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                  <img
+                    src={avatarImg}
+                    alt="user"
+                    className={`size-7 rounded-full ${
+                      currentUser ? "ring-2 ring-blue-500" : ""
+                    }`}
+                  />
+                </button>
+                {/* dropdown*/}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-40">
+                    <ul className="py-2">
+                      {navigation.map((item) => (
+                        <li key={item.name} onClick={()=>setIsDropdownOpen()}>
+                          <Link to={item.href} className="block px-4 py-2 text-sm hover:bg-gray-100">{item.name}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            ) : (
+              <Link to="/login">
+                <FaUser className="size-6" />
+              </Link>
+            )}
           </div>
 
           <button className="hidden sm:block">
             <IoHeartOutline className="size-6"></IoHeartOutline>
           </button>
+
           <Link
             to="/cart"
             className="bg-primary p-1 sm:px-6 px-2 flex items-center rounded-sm"
